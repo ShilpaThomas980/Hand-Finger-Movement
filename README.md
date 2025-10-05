@@ -1,7 +1,8 @@
 # Hand Tracking & Finger Accuracy Game
 
 ## Project Aim
-This project is an interactive hand-tracking application using Python. The main goal is to track finger movements in real-time and measure accuracy while tracing different shapes on the screen. It also includes controlling system volume with finger gestures.
+This project is an interactive hand-tracking application using Python. 
+GOAL: To track finger movements in real-time and measure accuracy while tracing different shapes on the screen. It also includes controlling system volume with finger gestures.
 
 ---
 
