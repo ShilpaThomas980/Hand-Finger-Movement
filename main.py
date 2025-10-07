@@ -9,6 +9,7 @@ from fps import calculate_fps
 from accuracy import calculate_accuracy
 from hand_detection import detect_and_draw_hands
 from shape_manager import ShapeManager
+from accuracy_box import AccuracyBox
 
 # Opening Camera (0 for default camera)
 videoCap = cv2.VideoCapture(0)
@@ -19,8 +20,11 @@ if not videoCap.isOpened():
 # Variables for accuracy
 finger_positions = []
 
-# ----- Setup Managers ---------
+# Setup Managers
 shape_manager = ShapeManager()
+
+# For accuracy box
+accuracy_box = AccuracyBox()
 
 while True:
     # Reading Image
@@ -42,19 +46,16 @@ while True:
         for hand in recHands.multi_hand_landmarks:
             control_volume(hand, img, 0)
 
-    # Shape display and accuracy handling
-    shape_manager.update(img, finger_positions)
+    # Shape display
+    shape_done = shape_manager.update(img, finger_positions)
 
-    
+    # Trigger AccuracyBox if shape finished
+    if shape_done:
+        accuracy_box.start(finger_positions, shape_manager.target_path_points)
+        finger_positions.clear()  # reset for next shape
 
-    # # Draw target path
-    # for tx, ty in target_path_points:
-    #     cv2.circle(img, (tx, ty), 2, (0, 255, 255), -1)
-    #
-    # # Calculate the accuracy in real-time
-    # accuracy_score = calculate_accuracy(finger_positions, target_path_points)
-    # cv2.putText(img, f'Accuracy:{int(accuracy_score)}', (10, 120),
-    #             cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+    # Update AccuracyBox if active
+    accuracy_box.update(img)
 
     # Show the frame
     cv2.imshow("CamOutput", img)

@@ -1,3 +1,5 @@
+# ---- SHAPE MANAGER .PY CODE
+
 import cv2
 import time
 import shapes
@@ -23,13 +25,11 @@ class ShapeManager:
     def update(self, img, finger_positions):
         """
         Handles shape switching, countdown, and drawing.
-        Returns True when shape display (8s) ends, otherwise False
+        Returns None
         """
         current_time = time.time()
         elapsed = current_time - self.last_switch_time
         height, width, _ = img.shape
-
-        shape_done = False # Flag that indicates 8-second phase ended
 
         # ----------- Countdown Phase ---------------
         if not self.show_shape:
@@ -50,13 +50,19 @@ class ShapeManager:
             for tx, ty in self.target_path_points:
                 cv2.circle(img, (tx, ty), 2, (0, 255, 255), -1)
 
-        # --------- Shape Finished (After 8 seconds) ------------
+            # Calculate accuracy
+            accuracy_score = calculate_accuracy(finger_positions, self.target_path_points)
+            cv2.putText(img, f'Accuracy:{int(accuracy_score)}', (10, 120),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+
+        # --------- Switch to Next Shape ------------
         else:
-            shape_done = True  # Signal that accuracy should be shown now
-            # Switch to next shape
             self.shape_index = (self.shape_index + 1) % len(self.shape_functions)
             self.target_path_points = self.shape_functions[self.shape_index]()
             self.show_shape = False
             self.countdown_start = time.time()
+            finger_positions.clear()  # reset tracking
 
-        return shape_done
+
+
+

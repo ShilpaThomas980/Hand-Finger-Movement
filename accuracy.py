@@ -5,6 +5,8 @@ def calculate_accuracy(finger_positions, target_path_points):
     Calculate accuracy -> closeness of index finger to target path.
     finger_pos = list of (x,y) tuples for fingertip over frame.
     target_path_pos = list of (x,y) tuples defining target path / shape.
+
+    Calculate accuracy for a single fingertip point.
     Returns: accuracy percentage (0-100)
     """
     if not finger_positions or not target_path_points:
@@ -16,10 +18,16 @@ def calculate_accuracy(finger_positions, target_path_points):
         distances = [np.hypot(fx - tx, fy - ty) for tx, ty in target_path_points]
         errors.append(min(distances))
 
+    if len(errors) == 0:
+        return 0
+
+    # Mean of minimal distances (avg deviation from shape)
     mean_error = np.mean(errors)
 
     # Convert error to accuracy
-    # By adjust scaling_factor to screen / shape size
-    scaling_factor = 50 # max expected distance in pixels
+    # By adjust scaling_factor for my screen size
+    scaling_factor = 50.0  # max expected distance in pixels
     accuracy = max(0, 100 - (mean_error / scaling_factor * 100))
-    return accuracy
+
+    # Round to one decimal for cleaner display
+    return round(accuracy, 1)
