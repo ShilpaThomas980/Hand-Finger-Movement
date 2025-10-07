@@ -37,9 +37,12 @@ GOAL: To track finger movements in real-time and measure accuracy while tracing 
 
 ### 7. `shape_manager.py`
 - Manages automatic shape display and countdown.
-- Displays a countdown (3, 2, 1) before showing each shape.
 - Switches to the next shape every 8 seconds.
 - Calculates accuracy in real-time.
+
+### 8. `accuracy_box.py`
+- Displays a transparent Accuracy box on the screen.
+- Also shows the Accuracy and Next shape countdown from 3.
 
 ---
 
